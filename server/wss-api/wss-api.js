@@ -15,7 +15,7 @@ module.exports = async function (httpServer) {
     global.wss = new WebSocketServer({
       server: httpServer,
       autoAcceptConnections: true,
-      path: ''
+      path: '/'
     })
     global.wss.socketListByUuid = {}
     global.wss.socketListByClientId = {}

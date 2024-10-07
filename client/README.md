@@ -4,9 +4,9 @@
 </a>
 </p>
 
-[![](https://img.shields.io/badge/%F0%9F%8C%90%20Powered_by-miajupiter.com-blueviolet?style=flat&labelColor=%23323232)](https://miajupiter.com) ![GitHub followers](https://img.shields.io/github/followers/miajupiter?label=MiaJupiter&logo=github)
+[![](https://img.shields.io/badge/%F0%9F%8C%90%20Powered_by-aliabi.org-blueviolet?style=flat&labelColor=%23323232)](https://aliabi.org) ![GitHub followers](https://img.shields.io/github/followers/aliabi-org?label=AliAbi-org&logo=github)
 
-# ConnectorJS-Client
+# Connector Client
 
 
 Establish easy and secure remote connection to your local databases, files, etc.
@@ -18,7 +18,7 @@ Establish easy and secure remote connection to your local databases, files, etc.
 
 ```bash
 # npm / yarn install globally
-$ npm install connectorjs-client -g
+$ npm install connector -g
 
 # Usage
 $ connectorjs -h

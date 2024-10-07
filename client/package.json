@@ -4,17 +4,17 @@
   "description": "Establish easy and secure remote connection to your local databases, files, etc.",
   "main": "connectorjs-client.js",
   "scripts": {
-    "dev": "nodemon connectorjs-client.js",
-    "start": "nodemon connectorjs-client.js",
+    "dev": "nodemon connector.js",
+    "start": "nodemon connector.js",
     "env": "node node_modules/env-sample/cli.js",
-    "nsis": "makensis.exe  /NOCONFIG /NOCD installer\\win64\\win64-install-script.nsi"
+    "nsis": "makensis.exe  /NOCONFIG /NOCD ..\\installer\\win64\\win64-install-script.nsi"
   },
   "bin": {
     "connectorjs": "./cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/connectorjs/connectorjs-client.git"
+    "url": "git+https://github.com/aliabi-org/connector.git"
   },
   "keywords": [
     "remote",
@@ -24,12 +24,12 @@
     "database",
     "nodejs"
   ],
-  "author": "MiaJupiter DevTeam | https://miajupiter.com",
+  "author": "AliAbi Collective | https://aliabi.org",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/connectorjs/connectorjs-client/issues"
+    "url": "https://github.com/aliabi-org/connector/issues"
   },
-  "homepage": "https://github.com/connectorjs/connectorjs-client#readme",
+  "homepage": "https://github.com/aliabi-org/connector#readme",
   "dependencies": {
     "axios": "^1.3.2",
     "colors": "^1.4.0",

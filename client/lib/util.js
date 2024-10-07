@@ -17,7 +17,7 @@ Number.prototype.toDigit = function (digit) {
   return s
 }
 
-Date.prototype.yyyymmdd = function(){
+Date.prototype.yyyymmdd = function () {
   let d = new Date(this)
 
   return `${d.getFullYear()}-${(d.getMonth() + 1).toDigit(2)}-${d.getDate().toDigit(2)}`
@@ -45,14 +45,14 @@ global.warnLog = function (obj, ...placeholders) {
 }
 
 
-global.devLog=(...props)=>{
-  if(process.env.NODE_ENV==='development'){
+global.devLog = (...props) => {
+  if (process.env.NODE_ENV === 'development') {
     eventLog(...props)
   }
 }
 
-global.devError=(...props)=>{
-  if(process.env.NODE_ENV==='development'){
+global.devError = (...props) => {
+  if (process.env.NODE_ENV === 'development') {
     errorLog(...props)
   }
 }
@@ -88,52 +88,52 @@ exports.osBaseInfo = () => {
     tmpdir: os.tmpdir(),
     totalmem: os.totalmem(),
     freemem: os.freemem(),
-    uptime:os.uptime(),
-    userInfo:os.userInfo(),
+    uptime: os.uptime(),
+    userInfo: os.userInfo(),
   }
-  
+
   return obj
 }
 
 exports.encodeBase64 = (data) => {
-  return Buffer.from(data).toString('base64');
+  return Buffer.from(data).toString('base64')
 }
 
 exports.decodeBase64 = (data) => {
-  return Buffer.from(data, 'base64').toString('ascii');
+  return Buffer.from(data, 'base64').toString('ascii')
 }
 
-exports.htmlEval=(html, values = {})=>{
-	let code = ''
-	try {
+exports.htmlEval = (html, values = {}) => {
+  let code = ''
+  try {
 
-		Object.keys(values).forEach((key) => {
-			if(key != 'class')
-				code += `let ${key}=${JSON.stringify(values[key])}\n`
-		})
-		code += `return \`${html}\``
-		let f = new Function(code)
-		return f()
-	} catch (tryErr) {
-    console.log(`tryErr`, tryErr )
+    Object.keys(values).forEach((key) => {
+      if (key != 'class')
+        code += `let ${key}=${JSON.stringify(values[key])}\n`
+    })
+    code += `return \`${html}\``
+    let f = new Function(code)
+    return f()
+  } catch (tryErr) {
+    console.log(`tryErr`, tryErr)
   }
-	return html
+  return html
 }
 
 
-exports.showAppInfo = function(){
-  
+exports.showAppInfo = function () {
+
   const path = require('path')
   require('dotenv').config()
-  const packageInfo=require(path.join(__root,'package.json'))
+  const packageInfo = require(path.join(__root, 'package.json'))
   const clientId = process.env.CLIENT_ID || ''
   const clientPass = process.env.CLIENT_PASS || ''
   console.log('-'.repeat(70))
   console.log('Application Name:'.padding(25), packageInfo.name.toUpperCase().brightYellow)
   console.log('Version:'.padding(25), packageInfo.version.brightGreen)
   console.log('Socket Server URI:'.padding(25), (process.env.SOCKET_SERVER_URL || '').cyan)
-  console.log('Uptime Started:'.padding(25), process.env.UPTIME_STARTED?new Date(process.env.UPTIME_STARTED).yyyymmddhhmmss().white:'UPTIME_STARTED is empty')
-  console.log('Copyright:'.padding(25), `2023-Now (c) ${(packageInfo.author || '')}`.green)
+  console.log('Uptime Started:'.padding(25), process.env.UPTIME_STARTED ? new Date(process.env.UPTIME_STARTED).yyyymmddhhmmss().white : 'UPTIME_STARTED is empty')
+  console.log('Copyright:'.padding(25), `2014-${new Date().getFullYear()} (c) ${(packageInfo.author || '')}`.green)
   console.log('')
   console.log('-'.repeat(70))
   console.log('CLIENT ID:'.padding(25), (clientId || '').brightMagenta)

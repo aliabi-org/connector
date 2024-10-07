@@ -1,34 +1,34 @@
 
 module.exports = () => new Promise((resolve, reject) => {
-	try {
+  try {
     require('colors')
     require('dotenv').config()
 
-    global.envSave=require('env-save')
+    global.envSave = require('env-save')
 
-		
-		global.fs = require('fs')
-		global.path = require('path')
-		global.uuid = require('uuid')
-		// global.atob = require('atob')
-		// global.btoa = require('btoa')
-		global.util = require(path.join(__root, 'lib', 'util'))
-    global.si=require('systeminformation')
 
-    
-		global.os = require('os')
-    
-    if(!fs.existsSync(path.join(__root, '.env'))){
-      let s=`
+    global.fs = require('fs')
+    global.path = require('path')
+    global.uuid = require('uuid')
+    // global.atob = require('atob')
+    // global.btoa = require('btoa')
+    global.util = require(path.join(__root, 'lib', 'util'))
+    global.si = require('systeminformation')
+
+
+    global.os = require('os')
+
+    if (!fs.existsSync(path.join(__root, '.env'))) {
+      let s = `
 NODE_ENV = production
-SOCKET_SERVER_URL = wss://api.connectorjs.com/connector
+SOCKET_SERVER_URL = wss://connector.aliabi.org/
 RECONNECTION_INTERVAL = 20000
 CLIENT_ID =
 CLIENT_PASS =
 
-# ConnectorJS Client, powered by MiaJupiter.com
+# Connector Client, powered by AliAbi.org
 `
-      fs.writeFileSync(path.join(__root,'.env'),s,'utf8')
+      fs.writeFileSync(path.join(__root, '.env'), s, 'utf8')
       // envSave('NODE_ENV','production')
       // envSave('SOCKET_SERVER_URL','wss://api.connectorjs.com/connector')
       // envSave('RECONNECTION_INTERVAL',20000)
@@ -37,8 +37,8 @@ CLIENT_PASS =
     }
 
     util.showAppInfo()
-		resolve()
-	} catch (err) {
-		reject(err)
-	}
+    resolve()
+  } catch (err) {
+    reject(err)
+  }
 })

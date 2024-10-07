@@ -2,16 +2,16 @@
 ;Include Modern UI
 
 !include "MUI2.nsh"
-Icon "img\connectorjs.ico"
+Icon "img\connector.ico"
 
-Name "ConnectorJS Client"
+Name "Connector Client"
 
-OutFile "installer\win64\connectorjs-client-setup.exe"
+OutFile "connectorclient-setup.exe"
 
-InstallDir "$APPDATA\ConnectorJS Client"
-;InstallDir "$PROGRAMFILES\ConnectorJS Client"
+InstallDir "$APPDATA\ConnectorClient"
+;InstallDir "$PROGRAMFILES\ConnectorClient"
 
-InstallDirRegKey HKLM "Software\ConnectorJS Client" "Install_Dir"
+InstallDirRegKey HKLM "Software\ConnectorClient" "Install_Dir"
 
 
 RequestExecutionLevel admin
@@ -38,44 +38,47 @@ UninstPage instfiles
   !define MUI_PAGE_CUSTOMFUNCTION_LEAVE installServices
   !insertmacro MUI_PAGE_FINISH
   
-  ; !insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "English"
 
   
 
 
 ; The stuff to install
-;Section "ConnectorJS Client (required)"
+;Section "Connector Client (required)"
 Section "install"
 
   SetOutPath $INSTDIR
 
   CreateDirectory "$INSTDIR\img"
 
-  File /r "installer\win64\node.exe"
-  File /r "installer\win64\nssm.exe"
-
-
-  File /r /x ".env*" /x "installer"  /x ".*" "*.*"
-
+  File /r "node.exe"
+  File /r "nssm.exe"
   
 
-  WriteRegStr HKLM "Software\ConnectorJS Client" "Install_Dir" "$INSTDIR"
+  File /r /x ".env*" /x "installer"  /x ".*" "..\..\client\*.*"
+
+  SetOutPath $INSTDIR\img
+  File /r "img\*.ico"
+  
+  SetOutPath $INSTDIR
+  
+  WriteRegStr HKLM "Software\ConnectorClient" "Install_Dir" "$INSTDIR"
   
   ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorJS Client" "DisplayName" "ConnectorJS Client"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorJS Client" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorJS Client" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorJS Client" "NoRepair" 1
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorClient" "DisplayName" "ConnectorClient"
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorClient" "UninstallString" '"$INSTDIR\uninstall.exe"'
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorClient" "NoModify" 1
+  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorClient" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
   
-  CreateDirectory "$SMPROGRAMS\ConnectorJS Client\"
-  CreateShortcut "$SMPROGRAMS\ConnectorJS Client\ConnectorJS Start.lnk" "$INSTDIR\node.exe" "cli.js start" "$INSTDIR\img\database.ico"
-  CreateShortcut "$SMPROGRAMS\ConnectorJS Client\Client User Information.lnk" "$INSTDIR\node.exe" "cli.js show" "$INSTDIR\img\connectorjs.ico"
-  CreateShortcut "$SMPROGRAMS\ConnectorJS Client\Renew Password.lnk" "$INSTDIR\node.exe" "cli.js renewpass" "$INSTDIR\img\shield.ico"
-  CreateShortcut "$SMPROGRAMS\ConnectorJS Client\Uninstall.lnk" "$INSTDIR\uninstall.exe"
+  CreateDirectory "$SMPROGRAMS\ConnectorClient\"
+  CreateShortcut "$SMPROGRAMS\ConnectorClient\Connector Start.lnk" "$INSTDIR\node.exe" "cli.js start" "$INSTDIR\img\database.ico"
+  CreateShortcut "$SMPROGRAMS\ConnectorClient\Client User Information.lnk" "$INSTDIR\node.exe" "cli.js show" "$INSTDIR\img\connector.ico"
+  CreateShortcut "$SMPROGRAMS\ConnectorClient\Renew Password.lnk" "$INSTDIR\node.exe" "cli.js renewpass" "$INSTDIR\img\shield.ico"
+  CreateShortcut "$SMPROGRAMS\ConnectorClient\Uninstall.lnk" "$INSTDIR\uninstall.exe"
   ;create desktop shortcut
-  CreateShortCut "$DESKTOP\ConnectorJS Client.lnk" "$INSTDIR\node.exe" "cli.js show" "$INSTDIR\img\connectorjs.ico"
+  CreateShortCut "$DESKTOP\ConnectorClient.lnk" "$INSTDIR\node.exe" "cli.js show" "$INSTDIR\img\connector.ico"
 
 SectionEnd
 
@@ -83,22 +86,22 @@ SectionEnd
 Section "Uninstall"
   
   ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorJS Client"
-  DeleteRegKey HKLM "SOFTWARE\ConnectorJS Client"
+  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\ConnectorClient"
+  DeleteRegKey HKLM "SOFTWARE\ConnectorClient"
 
   ExpandEnvStrings $0 %COMSPEC%
-  ExecWait '"$INSTDIR\nssm.exe" stop "ConnectorJS Client"'
-  ExecWait '"$INSTDIR\nssm.exe" remove "ConnectorJS Client" confirm'
+  ExecWait '"$INSTDIR\nssm.exe" stop "ConnectorClient"'
+  ExecWait '"$INSTDIR\nssm.exe" remove "ConnectorClient" confirm'
 
 
   Delete $INSTDIR\*.*
 
   ; Remove shortcuts, if any
-  Delete "$SMPROGRAMS\ConnectorJS Client\*.*"
-  Delete "$DESKTOP\ConnectorJS Client.lnk"
+  Delete "$SMPROGRAMS\ConnectorClient\*.*"
+  Delete "$DESKTOP\ConnectorClient.lnk"
 
   ; Remove directories used
-  RMDir "$SMPROGRAMS\ConnectorJS Client"
+  RMDir "$SMPROGRAMS\ConnectorClient"
   RMDir /r "$INSTDIR"
 
 SectionEnd
@@ -107,14 +110,14 @@ SectionEnd
 Function installServices
   
   ExpandEnvStrings $0 %COMSPEC%
-  Exec '"$INSTDIR\nssm.exe" install "ConnectorJS Client"  "$INSTDIR\node.exe" "connector-client.js"'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppParameters "connector-client.js"'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppDirectory $INSTDIR\'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppStdout $INSTDIR\log.log'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppStderr $INSTDIR\error.log'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppStopMethodSkip 6'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppStopMethodConsole 1000'
-  Exec '"$INSTDIR\nssm.exe" set "ConnectorJS Client" AppThrottle 5000'
-  Exec '"$INSTDIR\nssm.exe" start "ConnectorJS Client"'
+  Exec '"$INSTDIR\nssm.exe" install "ConnectorClient"  "$INSTDIR\node.exe" "connector.js"'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppParameters "connector.js"'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppDirectory $INSTDIR\'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppStdout $INSTDIR\log.log'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppStderr $INSTDIR\error.log'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppStopMethodSkip 6'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppStopMethodConsole 1000'
+  Exec '"$INSTDIR\nssm.exe" set "ConnectorClient" AppThrottle 5000'
+  Exec '"$INSTDIR\nssm.exe" start "ConnectorClient"'
 
 FunctionEnd
