@@ -8,7 +8,14 @@ const spamCheck = require(path.join(__root, 'lib/spamdetector'))
 
 module.exports = async (app) => {
 
-  app.all('/*', function (req, res, next) {
+  app.all('/*', (req, res, next) => {
+    req.IP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || ''
+    req.getValue = (key) => {
+      let val = (req.headers[key] || req.body[key] || req.query[key] || '')
+      if (typeof val === 'string') val = val.trim()
+      return val
+    }
+    console.log('req.body:', req.body)
     next()
   })
   app.use(`${basePath}/docs`, express.static(path.join(__root, 'docs')))
@@ -35,7 +42,6 @@ module.exports = async (app) => {
   })
 }
 
-
 function clientControllers(app, route) {
   setRoutes(app, route, async (req, res, next) => {
 
@@ -44,7 +50,9 @@ function clientControllers(app, route) {
       clientPassport(req)
         .then(connector => {
           let params = {}
+
           Object.assign(params, req.body || {}, req.query || {})
+          console.log('params:', params)
           try {
             ctl(connector, params, req)
               .then(data => {
@@ -78,8 +86,9 @@ function clientPassport(req) {
     if (isSpam) {
       reject({ name: 'SPAM', message: `Your request has been detected as spam. Try again after ${Math.ceil(isSpam / 60)} minutes later.` })
     } else {
-      let clientId = req.headers.clientid || req.headers.clientId || req.body.clientId || req.query.clientId || ''
-      let clientPass = req.headers.clientpass || req.headers.clientPass || req.body.clientPass || req.query.clientPass || ''
+      const clientId = req.getValue('clientId') || req.getValue('clientid')
+      const clientPass = req.getValue('clientPass') || req.getValue('clientpass')
+      console.log('clientPassport clientId:', clientId, '  clientPass:', clientPass)
       if (clientId && clientPass) {
         db.connectors.findOne({ clientId: clientId, clientPass: clientPass })
           .then(connDoc => {
@@ -102,9 +111,9 @@ function clientPassport(req) {
           .catch(reject)
       } else {
         if (spamCheck(IP)) {
-          reject({ name: 'SPAM', message: `Your request was detected as spam. After 60 minutes, try again` })
+          reject(`Your request was detected as spam. After 60 minutes, try again`)
         } else {
-          reject({ name: 'AUTH', message: `Connector Authentication failed.` })
+          reject(`Connector Authentication failed.11`)
         }
       }
     }

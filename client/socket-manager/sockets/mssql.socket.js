@@ -5,12 +5,17 @@ module.exports = (socket, params) => {
 			.then(pool => {
 				if (params.query) {
 					pool.query(params.query)
-						.then(result => sendSuccess( result, params.callback))
+						.then(result => {
+							if (result.recordsets && result.recordset) {
+								delete result.recordset
+							}
+							sendSuccess(result, params.callback)
+						})
 						.catch(err => sendError(err, params.callback))
 						.finally(() => pool.close())
 				} else {
 					pool.close()
-					sendSuccess( true, params.callback)
+					sendSuccess(true, params.callback)
 				}
 			})
 			.catch(err => sendError(err, params.callback))
